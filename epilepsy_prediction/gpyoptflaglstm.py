@@ -22,15 +22,15 @@ from random import sample, seed
 from copy import deepcopy
 from sklearn import preprocessing
 from sklearn.utils import shuffle
-from util.plot import plot_lists, plot_single_list, plot_single_list_same, plot_scatter_xy
-from util.savefiles import save_str_app, saveResultAppend
-from util.lstmconfig import get_param_domain
+from utils.plot import plot_lists, plot_single_list, plot_single_list_same, plot_scatter_xy
+from utils.savefiles import save_str_app, saveResultAppend
+from utils.lstmconfig import get_param_domain
 import pandas as pd
 import os.path
 import sys
 import datetime
 
-import util.lstmflags as flag
+import utils.lstmflags as flag
 FLAGS = flag.args
 #print(FLAGS)
 

@@ -1,0 +1,43 @@
+#!/bin/bash
+#SBATCH -J penntree
+#SBATCH -p gpu_veryshort
+#SBATCH --mem=100G
+#SBATCH -N 1
+#SBATCH --gres=gpu:2
+#SBATCH -t 0:59:50
+#SBATCH -a 0-0
+
+input1=(
+'--hidden_unit 50 --lr_decay 0.5 --max_max_epoch 20 --max_epoch 4 --tune_parameter dropout_input --run_single_values 0.999 --k_output 0.999 '
+'--hidden_unit 50 --lr_decay 0.5 --max_max_epoch 20 --max_epoch 4 --tune_parameter dropout_input --run_single_values 0.995 --k_output 0.999 '
+'--hidden_unit 50 --lr_decay 0.5 --max_max_epoch 20 --max_epoch 4 --tune_parameter dropout_input --run_single_values 0.9 --k_output 0.999 '
+)
+
+input=(
+'--hidden_unit 50 --lr_decay 0.9999 --max_max_epoch 55 --max_epoch 4 --tune_parameter dropout_input --run_single_values 0.001 --k_output 0.001 '
+'--hidden_unit 50 --lr_decay 0.9999 --max_max_epoch 55 --max_epoch 4 --tune_parameter dropout_input --run_single_values 0.999 --k_output 0.999 '
+'--hidden_unit 50 --lr_decay 0.9999 --max_max_epoch 55 --max_epoch 4 --tune_parameter dropout_input --run_single_values 0.5 --k_output 0.999 '
+)
+
+input2=(
+'--hidden_unit 50 --lr_decay 0.9999 --max_max_epoch 55 --max_epoch 4 --tune_parameter dropout_input --run_single_values 0.5 --k_output 0.5 '
+)
+
+input3=(
+'--hidden_unit 50 --lr_decay 0.5 --max_max_epoch 55 --max_epoch 4 --tune_parameter dropout_input --run_single_values 0.5 --k_output 0.5 '
+)
+
+input3=(
+'--hidden_unit 50 --lr_decay 0.5 --max_max_epoch 55 --max_epoch 14 --tune_parameter dropout_input --run_single_values 0.999 --k_output 0.999'
+)
+
+
+batch_name=${SLURM_ARRAY_JOB_ID}"_"${SLURM_ARRAY_TASK_ID}
+
+cd ..
+REM python3  adamflagpenn.py ${input[$SLURM_ARRAY_TASK_ID]} $batch_name
+REM python3  test_ptb.py 100 0.001 50 --model=large
+REM python3 test_ptb.py ${input[$SLURM_ARRAY_TASK_ID]}
+python3 flagpenngrid.py --run_single ${input3[$SLURM_ARRAY_TASK_ID]}
+
+sleep 2

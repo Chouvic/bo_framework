@@ -1,0 +1,16 @@
+#!/bin/bash
+#SBATCH -J 70epochs
+#SBATCH -p gpu_veryshort
+#SBATCH --mem=100G
+#SBATCH -N 1
+#SBATCH --gres=gpu:2
+#SBATCH -t 1:00:00
+#SBATCH -a 0
+
+
+batch_name=${SLURM_ARRAY_JOB_ID}"_"${SLURM_ARRAY_TASK_ID}
+
+echo "This is job #${SLURM_ARRAY_JOB_ID}"
+
+cd ..
+python3 gpyoptflaglstm.py --batch_filename $batch_name --sop 5 --weight_num 2

@@ -1,0 +1,24 @@
+#!/bin/bash
+#SBATCH -J checkdropout
+#SBATCH -p gpu
+#SBATCH --mem=100G
+#SBATCH -N 1
+#SBATCH --gres=gpu:2
+#SBATCH -t 96:00:00
+#SBATCH -a 0-0
+
+cd ..
+batch_name1=${SLURM_ARRAY_JOB_ID}"_"${SLURM_ARRAY_TASK_ID}1
+batch_name2=${SLURM_ARRAY_JOB_ID}"_"${SLURM_ARRAY_TASK_ID}2
+batch_name3=${SLURM_ARRAY_JOB_ID}"_"${SLURM_ARRAY_TASK_ID}3
+batch_name4=${SLURM_ARRAY_JOB_ID}"_"${SLURM_ARRAY_TASK_ID}4
+batch_name5=${SLURM_ARRAY_JOB_ID}"_"${SLURM_ARRAY_TASK_ID}5
+batch_name6=${SLURM_ARRAY_JOB_ID}"_"${SLURM_ARRAY_TASK_ID}6
+
+
+
+python3 test_ptb.py 13 1 200 0.9999 0.5 --model=small --data_path=data
+python3 test_ptb.py 39 1 650 0.9999 0.8 --model=medium --data_path=data
+python3 test_ptb.py 55 1 1500 0.9999 0.87 --model=large --data_path=data
+
+

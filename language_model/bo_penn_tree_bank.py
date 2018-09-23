@@ -11,7 +11,7 @@ import numpy as np
 import tensorflow as tf
 from utils.plot import plot_lists, plot_single_list, plot_single_list_same, plot_scatter_xy
 matplotlib.pyplot.switch_backend('agg')
-import utils.mypennflag as flag
+import utils.pennflags as flag
 from utils import reader
 from utils import util
 import os

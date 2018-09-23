@@ -1,9 +1,6 @@
-import numpy as np
-#import torch
 import argparse
 
 parser = argparse.ArgumentParser(description='Epilepsy Prediction LSTM model')
-
 parser.add_argument('--data', type=str, default='data/',
                     help='location of the csv data')
 parser.add_argument('--weights', type=str, default='weights/',
@@ -63,10 +60,8 @@ parser.add_argument('--weight_num', type=str,default='0',
                     help='model weight num (use which model?)')
 parser.add_argument('--activation', type=str,default='softmax',
                     help='activation function of neuron')
-
 parser.add_argument('--batch_filename', type=str, default='none',
                     help='batch_filename')
-
 parser.add_argument('--bo_mode', type=str, default="gpyopt",
                     help='Select bo library gpyopt or fmfn(bayeopt)')
 parser.add_argument('--bo_epoch', type=int, default=20,
@@ -75,20 +70,8 @@ parser.add_argument('--tune_parameter', type=str, default='learning_rate',
                     help='learning_rate, dropout_input, dropout_output, dropout_update')
 
 
-
 args = parser.parse_args()
 args.tied = True
-
-# Set the random seed manually for reproducibility, but this does not work with 
-# keras
-np.random.seed(args.seed)
-#torch.manual_seed(args.seed)
-#print(args.cuda)
-#if torch.cuda.is_available():
-#    if not args.cuda:
-#        print("WARNING: You have a CUDA device, so you should probably run with --cuda")
-#    else:
-#        torch.cuda.manual_seed(args.seed)
 
 if args.mode == 'test':
     print('test mode')

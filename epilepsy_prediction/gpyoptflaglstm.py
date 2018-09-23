@@ -8,7 +8,6 @@ Created on Sun Jul 29 16:17:30 2018
 from __future__ import print_function
 from numpy.random import seed
 seed(1)
-set_random_seed(2)
 from tensorflow import set_random_seed
 import numpy as np
 import GPyOpt
@@ -30,22 +29,23 @@ import pandas as pd
 import os.path
 import sys
 import datetime
-import util.myparser as myparser
 
+import util.lstmflags as flag
+FLAGS = flag.args
+#print(FLAGS)
 
-print(myparser.args)
 currentDT = datetime.datetime.now()
-data_path = myparser.args.data
-images_path = myparser.args.images
+data_path = FLAGS.data
+images_path = FLAGS.images
 
 
-overlap = myparser.args.overlap
-predstep = myparser.args.predstep
-lr = myparser.args.lr
-d = myparser.args.dropout
-sop = myparser.args.sop
-seq_length = myparser.args.seq_length
-weight_num = myparser.args.weight_num
+overlap = FLAGS.overlap
+predstep = FLAGS.predstep
+lr = FLAGS.lr
+d = FLAGS.dropout
+sop = FLAGS.sop
+seq_length = FLAGS.seq_length
+weight_num = FLAGS.weight_num
 
 train_loss_list = []
 validation_loss_list = []
@@ -102,7 +102,7 @@ def build_net(structure,X_train,y_train,X_test,y_test, \
                        kernel_regularizer=l2(l2weight),recurrent_regularizer=l2(l2weight)))
 
   model.add(Dense(y_train.shape[1], activity_regularizer = l2(0.0)))
-  model.add(Activation(myparser.args.activation))
+  model.add(Activation(FLAGS.activation))
 
   if optimizer_str == 'adam':
     optimizer = Adam(lr=lr)
@@ -113,7 +113,7 @@ def build_net(structure,X_train,y_train,X_test,y_test, \
   # checkpointer = ModelCheckpoint(filepath="+PredictionAlgorithms/+Artificial_Neural_Networks/+Types/tmp/weights1.hdf5", verbose=1, save_best_only=True)
   checkpointer = ModelCheckpoint(filepath="weights/weights"+ weight_num+".hdf5", verbose=0, save_best_only=True)
 
-  if not myparser.args.early_stopping:
+  if not FLAGS.early_stopping:
       print('no early stopping')
       callbacks = [History(),checkpointer]
   else:
@@ -134,34 +134,26 @@ def build_net(structure,X_train,y_train,X_test,y_test, \
                     validation_data=(X_test,y_test),class_weight = class_weights,callbacks=callbacks,verbose=2)
 
   # save train and validation loss results to files
-  config = myparser.args.tune_parameter + "_" +str(myparser.args.lr)
-  savelossfilename = myparser.args.batch_filename+"_"+"train_validation_losses.txt"
+  config = FLAGS.tune_parameter + "_" +str(FLAGS.lr)
+  savelossfilename = FLAGS.batch_filename+"_"+"train_validation_losses.txt"
   saveResultAppend(savelossfilename, 'Configuration', config)
   saveResultAppend(savelossfilename, 'train_loss', hist.history['loss'])
   saveResultAppend(savelossfilename, 'val_loss', hist.history['val_loss'])
 
 #  plot_lists(hist.history['loss'], hist.history['val_loss'], \
-#             filename=images_path+'loss_val'+myparser.args.img_path, \
+#             filename=images_path+'loss_val'+FLAGS.img_path, \
 #             l1name='train_loss', l2name='validation_loss',\
 #           xlabel='epochs', ylabel='loss', title='train and validation loss')
 #
 #
 #  plot_lists(hist.history['acc'], hist.history['val_acc'], \
-#             filename=images_path+'acc_valacc'+myparser.args.img_path, \
+#             filename=images_path+'acc_valacc'+FLAGS.img_path, \
 #             l1name='train_acc', l2name='validation_acc',\
 #           xlabel='epochs', ylabel='accuracy', title='train and validation accuracy')
 
   model.load_weights("weights/weights"+ weight_num+".hdf5")
 
   return model
-
-
-
-
-
-#def train_models():
-#    model = build_net(structure,X_train_createseq,y_train_createseq,X_valid_createseq,y_valid_createseq,lr,d)
-#    return model
 
 def idx_seizure(y):
   """
@@ -249,10 +241,6 @@ def performance(pred,y,idx):
   print("total positive = "+str(len(idx)))
   return FPR, sens
 
-
-
-
-
 front_str = "toy2_"
 #front_str = ""
 
@@ -285,7 +273,7 @@ idx_valid = idx_seizure(y_valid_select)
 scaler = StandardScaler()
 
 # if scaler flag is set then scaler function will not be used
-if(myparser.args.scaler):
+if(FLAGS.scaler):
     X_train_fittransform = scaler.fit_transform(X_train_matrix)
     X_valid_transform = scaler.transform(X_valid_matrix)
 else:
@@ -316,19 +304,18 @@ else:
 def train_models(params):
     params = params.flatten()
     learning_rate = float(params[0])
-    myparser.args.lr = learning_rate
-    batch_size = myparser.args.batch_size
-    dropouts = myparser.args.dropout
-    np_epoch = myparser.args.epochs
-    l2weight = myparser.args.l2weight
-    optimizer_str = myparser.args.optimizer
-    structure = [['lstm',myparser.args.hidden_unit], ['lstm', myparser.args.hidden_unit] ]
-
+    FLAGS.lr = learning_rate
+    batch_size = FLAGS.batch_size
+    dropouts = FLAGS.dropout
+    np_epoch = FLAGS.epochs
+    l2weight = FLAGS.l2weight
+    optimizer_str = FLAGS.optimizer
+    structure = [['lstm',FLAGS.hidden_unit], ['lstm', FLAGS.hidden_unit] ]
     model = build_net(structure, X_train_createseq, y_train_createseq, X_valid_createseq, y_valid_createseq,\
             batch_size, learning_rate, dropouts,np_epoch, l2weight, optimizer_str)
     y_pred = model.predict(X_valid_createseq)
-    y_pred, y_valid_fire = firing_power(y_pred, y_valid_createseq, myparser.args.firing_threshold,\
-                                   myparser.args.firing_prob, myparser.args.firing_filter_window)
+    y_pred, y_valid_fire = firing_power(y_pred, y_valid_createseq, FLAGS.firing_threshold,\
+                                   FLAGS.firing_prob, FLAGS.firing_filter_window)
     fpr, sens = performance(y_pred, y_valid_fire, idx_valid)
 
     endcurrentDT = datetime.datetime.now()
@@ -342,20 +329,18 @@ def train_models(params):
     print("valid_loss in func = "+str(validation_loss[0]))
     validation_loss_list.append(validation_loss[0])
 
-    save_str = myparser.args.batch_filename+","+ str("%.4f"%fpr)+ ","+ str("%.4f"% sens)+","+str("%.4f"%myparser.args.lr)+","+str("%.4f"%myparser.args.dropout)+ \
+    save_str = FLAGS.batch_filename+","+ str("%.4f"%fpr)+ ","+ str("%.4f"% sens)+","+str("%.4f"%FLAGS.lr)+","+str("%.4f"%FLAGS.dropout)+ \
                 ","+str("%.4f"%validation_loss[0])
-    save_str_app(save_str, myparser.args.result_filename)
+    save_str_app(save_str, FLAGS.result_filename)
     return float(validation_loss[0])
 
-
-
 def do_gpy_opt():
-    multistep_domain = get_param_domain(myparser.args.tune_parameter)
+    multistep_domain = get_param_domain(FLAGS.tune_parameter)
     lstm_bopt = GPyOpt.methods.BayesianOptimization(train_models,
                                 domain=multistep_domain,
                                 acquisition_type='EI',
                                 exact_feval=True)
-    lstm_bopt.run_optimization(myparser.args.bo_epoch)
+    lstm_bopt.run_optimization(FLAGS.bo_epoch)
     print("------------------------params--------------------------------------")
     for i in range(0,len(validation_loss_list)):
         params_list.append(float(lstm_bopt.X[i]))
@@ -366,8 +351,8 @@ def do_gpy_opt():
     print("Training End   time----------- " + str(endcurrentDT))
     print("Training time	  ----------- " + str(endcurrentDT-currentDT))
     print("------------------------end bayesian optimisation--------------------------------------")
-    ac_png_path = myparser.args.images + myparser.args.batch_filename +"acquisition"
-    pngname = myparser.args.images + myparser.args.batch_filename +"convergence"
+    ac_png_path = FLAGS.images + FLAGS.batch_filename +"acquisition"
+    pngname = FLAGS.images + FLAGS.batch_filename +"convergence"
     lstm_bopt.plot_convergence(pngname)
     lstm_bopt.plot_acquisition(filename=ac_png_path)
 
@@ -377,8 +362,8 @@ def saveResult(filename, results):
     with open(filename, 'w') as f:
         f.write(str(results))
 
-paramslistfile = "results/params" + myparser.args.batch_filename +".txt"
-validationlistfile="results/validloss"+ myparser.args.batch_filename+".txt"
+paramslistfile = "results/params" + FLAGS.batch_filename +".txt"
+validationlistfile="results/validloss"+ FLAGS.batch_filename+".txt"
 
 saveResult(paramslistfile,params_list)
 saveResult(validationlistfile, validation_loss_list)

@@ -31,9 +31,9 @@ parser.add_argument('--pngpath', type=str, default='pictures/',
                     help='png path')
 parser.add_argument('--hidden_unit', type=int, default=50,
                     help='Hidden unit of the LSTM layer')
-parser.add_argument('--max_epoch', type=int, default=14,
+parser.add_argument('--max_epoch', type=int, default=4,
                     help='Epoch for decreasing learning rate')
-parser.add_argument('--max_max_epoch', type=int, default=55,
+parser.add_argument('--max_max_epoch', type=int, default=20,
                     help='Epoch for running models')
 parser.add_argument('--init_scale', type=float, default=0.04,
                     help='init scale')

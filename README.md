@@ -18,8 +18,8 @@ In epilepsy_prediction model, the following command will run the lstm model to t
 python gpyoptflaglstm.py 
 
 ### Running Single Experiments:
-python bo_penn_tree_bank.py --run_single
-python gpyoptflaglstm.py --run_single
+* python bo_penn_tree_bank.py --run_single
+* python gpyoptflaglstm.py --run_single
 
 
 ## Required
@@ -34,7 +34,7 @@ python gpyoptflaglstm.py --run_single
 * scipy==1.0.0
 
 Run the following command to install these packages:
-pip install -r requirements.txt
+* pip install -r requirements.txt
 
 
 ## References:

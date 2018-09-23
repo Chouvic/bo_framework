@@ -1,0 +1,4 @@
+echo "=== Fetch files from github ==="
+git fetch origin master:temp
+git merge temp
+

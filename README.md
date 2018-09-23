@@ -3,7 +3,8 @@
 
 This is a framework to test BO performance with two LSTM models. 
 The BO library is adopt from GPyOpt.
-The lstm framework is adopt from https://github.com/rodrigomfw/framework
+The lstm framework is adopt from https://github.com/rodrigomfw/framework.
+The Penn TreeBank model is adopt from https://github.com/tensorflow/models/blob/master/tutorials/rnn/ptb/ptb_word_lm.py.
 
 Install Requirements Packages:
 pip install -r requirements.txt

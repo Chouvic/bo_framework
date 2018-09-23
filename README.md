@@ -23,15 +23,15 @@ python gpyoptflaglstm.py --run_single
 
 
 ## Required
-numpy==1.14.5
-matplotlib==2.1.2
-pandas==0.22.0
-tensorflow==1.8.0
-Keras==2.1.5
-GPy==1.9.5
-GPyOpt==1.2.5
-scikit_learn==0.19.2
-scipy==1.0.0
+* numpy==1.14.5
+* matplotlib==2.1.2
+* pandas==0.22.0
+* tensorflow==1.8.0
+* Keras==2.1.5
+* GPy==1.9.5
+* GPyOpt==1.2.5
+* scikit_learn==0.19.2
+* scipy==1.0.0
 
 Run the following command to install these packages:
 pip install -r requirements.txt

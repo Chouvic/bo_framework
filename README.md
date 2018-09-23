@@ -5,8 +5,10 @@ This repository contains the code I used for tuning hyper-parameters in two mode
 Epilepsy Prediction and Natural Language Processing
 
 
-##Usage:
-###Default Settings:
+## Usage:
+
+### Default Settings:
+
 In language_model, the default command will run the Penn TreeBank model to tune learning rate (0.0001, 1) with 2 hidden layers, 50 hidden units, 20 epochs of training, 20 evaluaations of functions (bo epochs). More details of default settings is in language_model/utils/pennflags.py
 
 python bo_penn_tree_bank.py
@@ -15,12 +17,12 @@ In epilepsy_prediction model, the following command will run the lstm model to t
 
 python gpyoptflaglstm.py 
 
-###Running Single Experiments:
+### Running Single Experiments:
 python bo_penn_tree_bank.py --run_single
 python gpyoptflaglstm.py --run_single
 
 
-###Required
+## Required
 numpy==1.14.5
 matplotlib==2.1.2
 pandas==0.22.0
@@ -35,7 +37,7 @@ Run the following command to install these packages:
 pip install -r requirements.txt
 
 
-References:
+## References:
 Bayesian Optimisation Library:
 https://github.com/SheffieldML/GPyOpt
 
